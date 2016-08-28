@@ -15,7 +15,9 @@ class TestDirectory(unittest.TestCase):
         self.assertTrue(d)
         return
     
-  
+    def test_raise_exception_for_empty_str_path_when_creating_dir_object(self):
+        self.assertRaises(InvalidDirectoryValueError, Directory, "")
+        return    
 
 
 if __name__ == "__main__":
