@@ -1,6 +1,7 @@
 """Contains a Directory class to represent real directories"""
 
 from ..base import _BaseFileAndDirectoryInterface
+from ..exceptions import InvalidDirectoryValueError
 
 
 class Directory(_BaseFileAndDirectoryInterface):
@@ -15,7 +16,11 @@ class Directory(_BaseFileAndDirectoryInterface):
                 exception is raised if the path refers to a file, and also if an
                 empty string is given.
 
-        """        
+        """
+        if not path:
+            # No point in continuing since the methods of this class assume
+            # that a path will be given upon instantiation.
+            raise InvalidDirectoryValueError("No directory path was given")        
         
         return
     
