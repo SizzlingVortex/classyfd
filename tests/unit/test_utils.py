@@ -69,7 +69,13 @@ class TestUtilsUnixLike(unittest.TestCase):
         
         self.assertEqual(actual_normalized_path, expected_normalized_path)
         
-        return    
+        return   
+    
+    
+@unittest.skipUnless(OPERATING_SYSTEM == "windows", "Windows-only test")    
+class TestFileWindows(unittest.TestCase):
+    """Contains the tests specifically for Windows"""
+    pass
 
 
 if __name__ == "__main__":
