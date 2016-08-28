@@ -24,7 +24,34 @@ class TestDirectory(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as tf:
             self.assertRaises(NotADirectoryError, Directory, tf.name)
         
-        return    
+        return
+    
+    def test_get_path(self):
+        """
+        An absolute path should be returned, even if a relative path is
+        originally given when the instance object is created.
+    
+        """
+        # Pass an Absolute Path
+        d = Directory(self.fake_path)
+        self.assertEqual(
+            d.path, self.fake_path, msg="The absolute paths were not equal"
+        )
+    
+        # Pass Relative Paths
+        #
+        # Assign fake directory paths
+        relative_paths = ["./hello-world-dir", "../goodbye-world-dir"]
+        absolute_paths = [os.path.abspath(p) for p in relative_paths]
+        for i, path in enumerate(relative_paths):
+            d = Directory(path)
+            with self.subTest(path=path):
+                self.assertEqual(
+                    d.path, absolute_paths[i]
+                )            
+    
+    
+        return       
 
 
 if __name__ == "__main__":
