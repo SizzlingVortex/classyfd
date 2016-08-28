@@ -16,6 +16,7 @@ IS_UNIX_LIKE = bool(os.name == "posix")
 
 # Tests
 class TestUtils(unittest.TestCase):
+    """Contains the cross-platform tests"""
     def test_if_os_is_posix_compliant(self):
         expected_result = bool(os.name == "posix")
         actual_result = utils.determine_if_os_is_posix_compliant()
