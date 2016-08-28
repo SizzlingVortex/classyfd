@@ -4,6 +4,7 @@ import unittest
 import os
 import pwd
 import re
+import platform
 from tempfile import NamedTemporaryFile
 
 from classyfd import File, utils
