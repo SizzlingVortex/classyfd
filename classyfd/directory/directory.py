@@ -1,5 +1,7 @@
 """Contains a Directory class to represent real directories"""
 
+import os
+
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
 
@@ -20,7 +22,13 @@ class Directory(_BaseFileAndDirectoryInterface):
         if not path:
             # No point in continuing since the methods of this class assume
             # that a path will be given upon instantiation.
-            raise InvalidDirectoryValueError("No directory path was given")        
+            raise InvalidDirectoryValueError("No directory path was given")
+        
+        # Raise an exception if the path refers to a file
+        path_exists = os.path.exists(path)
+        path_is_a_file = os.path.isfile(path)
+        if path_exists and path_is_a_file:
+            raise NotADirectoryError("The path refers to a file")        
         
         return
     
