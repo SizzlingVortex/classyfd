@@ -40,6 +40,7 @@ class TestUtils(unittest.TestCase):
 
 @unittest.skipUnless(IS_UNIX_LIKE, "Test supported on Unix-like systems only")
 class TestUtilsUnixLike(unittest.TestCase):
+    """Containst the tests specifically for Unix-like operating systems"""
     def test_if_running_as_root_user(self):
         expected_result = bool(
             os.geteuid() == 0 or 
