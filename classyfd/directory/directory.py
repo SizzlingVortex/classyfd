@@ -28,8 +28,10 @@ class Directory(_BaseFileAndDirectoryInterface):
         path_exists = os.path.exists(path)
         path_is_a_file = os.path.isfile(path)
         if path_exists and path_is_a_file:
-            raise NotADirectoryError("The path refers to a file")        
+            raise NotADirectoryError("The path refers to a file") 
         
+        # Normalize the absolute path
+        self._path = os.path.normpath(os.path.abspath(path))         
         return
     
     # Special Methods
@@ -46,7 +48,14 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     @property
     def path(self):
-        pass              
+        """
+        Get the absolute path (or location) of the file
+        
+        Return Value:
+        (str)
+        
+        """
+        return self._path              
     
     @property
     def exists(self):
