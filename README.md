@@ -10,7 +10,7 @@ defaults on its provided file and directory operations.
 *Classy*FD is written in pure Python, and its only dependency is the Python 
 Standard Library.
 
-### Example
+### Examples
 
 ```python
 >>> from classyfd import File
@@ -54,4 +54,4 @@ Python 3.4.x (and higher)
 Copyright 2016 by Joshua Goring
 
 ### License
-MIT, see LICENSE for more details.
+MIT, see [LICENSE](https://github.com/SizzlingVortex/classyfd/blob/master/LICENSE) for more details.
