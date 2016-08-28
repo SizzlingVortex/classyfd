@@ -47,7 +47,26 @@ class TestUtilsUnixLike(unittest.TestCase):
         self.assertEqual(actual_result, expected_result)
         return   
     
-  
+    def test_normalize_path(self):
+        non_normalized_path = "/home//sizzlingvortex\\Desktop\hello-world.txt"
+        
+        forward_slashes_regexp = re.compile(r"/{1,}")
+        back_slashes_regexp = re.compile(r"\{1,}")        
+        
+        expected_normalized_path = (
+            re.sub(forward_slashes_regexp, "/", non_normalized_path)
+        )
+        
+        expected_normalized_path = (
+            re.sub(back_slashes_regexp, "/", expected_normalized_path)
+        )
+        
+        # Normalize the Path        
+        actual_normalized_path = utils.normalize_path(non_normalized_path)
+        
+        self.assertEqual(actual_normalized_path, expected_normalized_path)
+        
+        return    
 
 
 if __name__ == "__main__":
