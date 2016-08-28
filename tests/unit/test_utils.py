@@ -3,6 +3,7 @@
 import unittest
 import os
 import pwd
+import re
 from tempfile import NamedTemporaryFile
 
 from classyfd import File, utils
@@ -43,7 +44,9 @@ class TestUtilsUnixLike(unittest.TestCase):
         )
         actual_result = utils.determine_if_running_as_root_user()
         self.assertEqual(actual_result, expected_result)
-        return    
+        return   
+    
+  
 
 
 if __name__ == "__main__":
