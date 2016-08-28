@@ -1,1 +1,1 @@
-"""Contains all of the logic for the custom directory objects"""
+"""Contains a Directory class to represent real directories"""
