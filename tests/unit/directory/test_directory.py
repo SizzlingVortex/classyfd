@@ -2,11 +2,12 @@
 
 import unittest
 
+from classyfd import Directory
 
 class TestDirectory(unittest.TestCase):
     def setUp(self):
         self.fake_path = os.path.abspath("hello-world-dir")
-        return    
+        return
 
 
 if __name__ == "__main__":
