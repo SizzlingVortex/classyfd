@@ -1,1 +1,1 @@
-"""Contains a Directory class to represent real directories"""
+"""Contains operations for directories"""
