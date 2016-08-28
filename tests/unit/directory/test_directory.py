@@ -20,7 +20,11 @@ class TestDirectory(unittest.TestCase):
         self.assertRaises(InvalidDirectoryValueError, Directory, "")
         return    
     
-  
+    def test_raise_exception_when_path_is_an_existing_file(self):
+        with tempfile.NamedTemporaryFile() as tf:
+            self.assertRaises(NotADirectoryError, Directory, tf.name)
+        
+        return    
 
 
 if __name__ == "__main__":
