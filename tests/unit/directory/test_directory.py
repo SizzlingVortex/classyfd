@@ -4,7 +4,9 @@ import unittest
 
 
 class TestDirectory(unittest.TestCase):
-    pass
+    def setUp(self):
+        self.fake_path = os.path.abspath("hello-world-dir")
+        return    
 
 
 if __name__ == "__main__":
