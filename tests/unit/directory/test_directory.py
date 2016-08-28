@@ -10,7 +10,10 @@ class TestDirectory(unittest.TestCase):
         self.fake_path = os.path.abspath("hello-world-dir")
         return
     
-
+    def test_create_directory_object(self):
+        d = Directory(self.fake_path)
+        self.assertTrue(d)
+        return
 
 
 if __name__ == "__main__":
