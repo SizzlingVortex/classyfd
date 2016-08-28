@@ -3,7 +3,7 @@
 import unittest
 import os
 
-from classyfd import Directory
+from classyfd import Directory, InvalidDirectoryValueError
 
 class TestDirectory(unittest.TestCase):
     def setUp(self):
@@ -14,6 +14,8 @@ class TestDirectory(unittest.TestCase):
         d = Directory(self.fake_path)
         self.assertTrue(d)
         return
+    
+  
 
 
 if __name__ == "__main__":
