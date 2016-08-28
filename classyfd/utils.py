@@ -86,3 +86,33 @@ def get_random_file_name(directory):
     return random_file_name
 
 
+def normalize_path(path):
+    """
+    Normalize a file or directory's path
+    
+    This function is more strict than Python's os.path.normpath on Unix-like
+    operating systems because only forward slashes are allowed to be returned
+    (for Unix-like operating systems). However, on Windows, os.path.normpath
+    was already strict enough, so this function acts the same on Windows.
+    
+    Parameters:
+    path -- (str) the path to normalize
+    
+    Return Value:
+    (str)
+    
+    """
+    forward_slashes_regexp = re.compile(r"/{1,}")
+    back_slashes_regexp = re.compile(r"\{1,}")    
+    
+    is_unix_like = determine_if_os_is_posix_compliant()
+    if is_unix_like:
+        normalized_path = os.path.normpath(path)
+        # Perform extra operations since os.path.normpath isn't strict enough
+        # on Unix-like operating systems.
+        normalized_path = re.sub(forward_slashes_regexp, "/", normalized_path)
+        normalized_path = re.sub(back_slashes_regexp, "/", normalized_path)
+    else:
+        normalized_path = os.path.normpath(path)
+    
+    return normalized_path
