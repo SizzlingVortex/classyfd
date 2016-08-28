@@ -12,6 +12,7 @@ from classyfd import File, utils
 
 # Globals
 IS_UNIX_LIKE = bool(os.name == "posix")
+OPERATING_SYSTEM = platform.system().lower()
 
 
 # Tests
