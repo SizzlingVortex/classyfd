@@ -56,6 +56,8 @@ class TestUtilsUnixLike(unittest.TestCase):
         forward_slashes_regexp = re.compile(r"/{1,}")
         back_slashes_regexp = re.compile(r"\{1,}")        
         
+        # For Unix-like operating systems, os.path.normpath is not srict enough
+        # to generate the expected normalized path.
         expected_normalized_path = (
             re.sub(forward_slashes_regexp, "/", non_normalized_path)
         )
