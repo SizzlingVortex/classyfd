@@ -75,7 +75,7 @@ class TestUtilsUnixLike(unittest.TestCase):
     
     
 @unittest.skipUnless(OPERATING_SYSTEM == "windows", "Windows-only test")    
-class TestFileWindows(unittest.TestCase):
+class TestUtilsWindows(unittest.TestCase):
     """Contains the tests specifically for Windows"""
     def test_normalize_path(self):
         non_normalized_path = "C:/Users//sizzlingvortex\\Desktop\hello.txt"
