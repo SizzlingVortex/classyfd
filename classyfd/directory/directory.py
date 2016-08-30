@@ -43,7 +43,7 @@ class Directory(_BaseFileAndDirectoryInterface):
         return repr_
 
     def __str__(self):
-        pass
+        return self.path
     
     # Properties
     @property
