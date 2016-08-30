@@ -63,7 +63,7 @@ class Directory(_BaseFileAndDirectoryInterface):
     @property
     def path(self):
         """
-        Get the absolute path (or location) of the file
+        Get the absolute path (or location) of the directory
         
         Return Value:
         (str)
