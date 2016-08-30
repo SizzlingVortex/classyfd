@@ -88,6 +88,38 @@ class TestDirectory(unittest.TestCase):
         expected_name = pathlib.Path(self.fake_path).name
         self.assertEqual(d.name, expected_name)
         return
+    
+    def test_get_parent_directory_path(self):
+        # One level up
+        fake_path = "/home/someuserthatdoesntexist/Documents"
+        d = Directory(fake_path)
+        expected_parent = os.path.abspath(
+            "/home/someuserthatdoesntexist"
+        )
+        
+        self.assertEqual(
+            d.parent, expected_parent, msg="One level up assert failed"
+        )
+        
+        # Zero should be treated the same as one level up
+        expected_parent = os.path.abspath(
+            "/home/someuserthatdoesntexist/Documents"
+        )
+        
+        self.assertEqual(
+            d.get_parent(levels=0), expected_parent,
+            msg="Zero should be treated the same as one level up"
+        )          
+        
+        # Two levels up
+        expected_parent = os.path.abspath("/home")
+        self.assertEqual(
+            d.get_parent(levels=3), expected_parent,
+            msg="Two levels up assert failed"
+        )      
+        
+        return
+    
 
 
 if __name__ == "__main__":
