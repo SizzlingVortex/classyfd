@@ -4,6 +4,7 @@ import os
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
+from .. import utils
 
 
 class Directory(_BaseFileAndDirectoryInterface):
@@ -30,8 +31,7 @@ class Directory(_BaseFileAndDirectoryInterface):
         if path_exists and path_is_a_file:
             raise NotADirectoryError("The path refers to a file") 
         
-        # Normalize the absolute path
-        self._path = os.path.normpath(os.path.abspath(path))         
+        self._path = utils.normalize_path(os.path.abspath(path))         
         return
     
     # Special Methods
