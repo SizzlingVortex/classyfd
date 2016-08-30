@@ -6,7 +6,7 @@ import shutil
 import pwd
 import grp
 
-from .. import config
+from .. import config, utils
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import FileError, InvalidFileValueError
 
@@ -34,8 +34,7 @@ class File(_BaseFileAndDirectoryInterface):
         if path_exists and path_is_a_directory:
             raise IsADirectoryError("The path refers to a directory")
         
-        # Normalize the absolute path
-        self._path = os.path.normpath(os.path.abspath(path)) 
+        self._path = utils.normalize_path(os.path.abspath(path)) 
         return
     
     # Special Methods
@@ -91,8 +90,7 @@ class File(_BaseFileAndDirectoryInterface):
         if path_exists and path_is_a_directory:
             raise IsADirectoryError("The path refers to a directory")
         
-        # Normalize the absolute path
-        self._path = os.path.normpath(os.path.abspath(new_path))         
+        self._path = utils.normalize_path(os.path.abspath(new_path))         
         return
     
     @property

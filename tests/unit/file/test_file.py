@@ -98,7 +98,10 @@ class TestFile(unittest.TestCase):
                 
         # Pass a Relative, Non-Normalized Path
         non_normalized_path = "directory1\\directory2\\hello-world.txt"
-        expected_path = os.path.normpath(os.path.abspath(non_normalized_path))
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
+        
         f = File(non_normalized_path)
         self.assertEqual(
             f.path, expected_path, 
@@ -127,7 +130,19 @@ class TestFile(unittest.TestCase):
             f.path, self.fake_path, msg="The relative path assert failed"
         )
         
+        # Pass a Relative, Non-Normalized Path
+        non_normalized_path = "directory1\\directory2\\hello-world.txt"
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
         
+        f = File(self.fake_path)
+        f.path = non_normalized_path
+        
+        self.assertEqual(
+            f.path, expected_path, 
+            msg="The relative, non-normalized path assert failed"
+        )          
         
         return
     
