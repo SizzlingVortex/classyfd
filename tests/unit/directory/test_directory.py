@@ -3,6 +3,7 @@
 import unittest
 import os
 import tempfile
+import pathlib
 
 from classyfd import Directory, InvalidDirectoryValueError, utils
 
@@ -80,7 +81,13 @@ class TestDirectory(unittest.TestCase):
         self.fake_path = os.path.abspath("hello-world/")
         d = Directory(self.fake_path)
         self.assertEqual(str(d), self.fake_path)
-        return          
+        return  
+    
+    def test_get_name(self):
+        d = Directory(self.fake_path)
+        expected_name = pathlib.Path(self.fake_path).name
+        self.assertEqual(d.name, expected_name)
+        return
 
 
 if __name__ == "__main__":
