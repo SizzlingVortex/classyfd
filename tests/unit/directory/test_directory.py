@@ -103,7 +103,7 @@ class TestDirectory(unittest.TestCase):
         
         # Zero should be treated the same as one level up
         expected_parent = os.path.abspath(
-            "/home/someuserthatdoesntexist/Documents"
+            "/home/someuserthatdoesntexist"
         )
         
         self.assertEqual(
@@ -114,7 +114,7 @@ class TestDirectory(unittest.TestCase):
         # Two levels up
         expected_parent = os.path.abspath("/home")
         self.assertEqual(
-            d.get_parent(levels=3), expected_parent,
+            d.get_parent(levels=2), expected_parent,
             msg="Two levels up assert failed"
         )      
         
