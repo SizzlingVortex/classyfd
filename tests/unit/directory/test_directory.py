@@ -63,7 +63,17 @@ class TestDirectory(unittest.TestCase):
         )         
     
     
-        return       
+        return   
+    
+    def test_repr(self):
+        """Test the official string representation of an instance"""
+        d = Directory(self.fake_path)
+        expected_repr = (
+            '{class_name}("{path}")'
+            .format(class_name=Directory.__name__, path=d.path)
+        )
+        self.assertEqual(repr(d), expected_repr)
+        return    
 
 
 if __name__ == "__main__":

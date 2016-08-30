@@ -36,7 +36,11 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     # Special Methods
     def __repr__(self):
-        pass
+        repr_ = (
+            "{class_name}(\"{path}\")"
+            .format(class_name=Directory.__name__, path=self.path)
+        )
+        return repr_
 
     def __str__(self):
         pass
