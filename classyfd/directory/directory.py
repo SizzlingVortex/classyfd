@@ -1,6 +1,7 @@
 """Contains a Directory class to represent real directories"""
 
 import os
+import pathlib
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
@@ -48,7 +49,7 @@ class Directory(_BaseFileAndDirectoryInterface):
     # Properties
     @property
     def name(self):
-        pass
+        return pathlib.Path(self.path).name
     
     @property
     def path(self):
