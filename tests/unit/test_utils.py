@@ -76,7 +76,7 @@ class TestUtilsUnixLike(unittest.TestCase):
 class TestFileWindows(unittest.TestCase):
     """Contains the tests specifically for Windows"""
     def test_normalize_path(self):
-        non_normalized_path = "/home//sizzlingvortex\\Desktop\hello-world.txt"
+        non_normalized_path = "C:/Users//sizzlingvortex\\Desktop\hello.txt"
         
         actual_normalized_path = utils.normalize_path(non_normalized_path)
         expected_normalized_path = os.path.normpath(non_normalized_path)
