@@ -37,6 +37,7 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     # Special Methods
     def __repr__(self):
+        """Get the official string representation"""
         repr_ = (
             "{class_name}(\"{path}\")"
             .format(class_name=Directory.__name__, path=self.path)
@@ -44,11 +45,19 @@ class Directory(_BaseFileAndDirectoryInterface):
         return repr_
 
     def __str__(self):
+        """Get the informal string representation"""
         return self.path
     
     # Properties
     @property
     def name(self):
+        """
+        Get the name of the directory
+        
+        Return Value:
+        (str)
+
+        """        
         return pathlib.Path(self.path).name
     
     @property
