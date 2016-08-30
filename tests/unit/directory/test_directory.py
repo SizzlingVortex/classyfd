@@ -120,6 +120,11 @@ class TestDirectory(unittest.TestCase):
         
         return
     
+    def test_raise_exception_for_get_parent_with_negative_values(self):
+        d = Directory(self.fake_path)
+        self.assertRaises(InvalidDirectoryValueError, d.get_parent, levels=-1)
+        return    
+    
 
 
 if __name__ == "__main__":
