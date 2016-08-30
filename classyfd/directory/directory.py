@@ -85,7 +85,14 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     @property
     def parent(self):
-        pass  
+        """
+        Get the parent directory of the directory
+
+        Return Value:
+        (str)
+
+        """
+        return str(pathlib.Path(self.path).parent)   
     
     @property
     def owner(self):
@@ -96,8 +103,33 @@ class Directory(_BaseFileAndDirectoryInterface):
         pass   
     
     # Regular Methods
-    def get_parent(self):
-        pass         
+    def get_parent(self, levels=1):
+        """
+        Get the parent directory of the directory
+    
+        Parameters:
+        levels -- (int) how many levels to look upwards for a parent directory.
+                  For example, 1 represents the immediate directory that
+                  contains the directory referred to by the instance object. 
+                  For clarity, 0 is treated the same as 1 in this method.
+    
+        Return Value:
+        (str)
+    
+        """
+        if levels < 0:
+            raise InvalidDirectoryValueError("levels should be 0 or more")
+    
+        elif levels == 0:
+            # 0 and 1 should be treated the same for clarity
+            levels = 1
+    
+        p = pathlib.Path(self.path)        
+        for i in range(levels):
+            parent = str(p.parent)
+            p = pathlib.Path(parent)
+    
+        return parent         
     
     def create(self):
         pass         
