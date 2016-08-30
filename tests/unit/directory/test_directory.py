@@ -4,7 +4,7 @@ import unittest
 import os
 import tempfile
 
-from classyfd import Directory, InvalidDirectoryValueError
+from classyfd import Directory, InvalidDirectoryValueError, utils
 
 class TestDirectory(unittest.TestCase):
     def setUp(self):
@@ -28,8 +28,8 @@ class TestDirectory(unittest.TestCase):
     
     def test_get_path(self):
         """
-        An absolute path should be returned, even if a relative path is
-        originally given when the instance object is created.
+        A normalized, absolute path should be returned, even if a relative path
+        is originally given when the instance object is created.
     
         """
         # Pass an Absolute Path
@@ -48,7 +48,19 @@ class TestDirectory(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(
                     d.path, absolute_paths[i]
-                )            
+                ) 
+                
+        # Pass a Relative, Non-Normalized Path
+        non_normalized_path = "//directory1\\directory2\\directory3"
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
+        
+        d = Directory(non_normalized_path)
+        self.assertEqual(
+            d.path, expected_path, 
+            msg="The relative, non-normalized path assert failed"
+        )         
     
     
         return       
