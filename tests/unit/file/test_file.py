@@ -74,8 +74,8 @@ class TestFile(unittest.TestCase):
     
     def test_get_path(self):
         """
-        An absolute path should be returned, even if a relative path is
-        originally given when the instance object is created.
+        A normalized, absolute path should be returned -- even if a relative
+        path is originally given when the instance object is created.
         
         """
         # Pass an Absolute Path
@@ -94,8 +94,19 @@ class TestFile(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(
                     f.path, absolute_paths[i]
-                )            
+                )
+                
+        # Pass a Relative, Non-Normalized Path
+        non_normalized_path = "directory1\\directory2\\hello-world.txt"
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
         
+        f = File(non_normalized_path)
+        self.assertEqual(
+            f.path, expected_path, 
+            msg="The relative, non-normalized path assert failed"
+        )        
         
         return
     
@@ -119,7 +130,19 @@ class TestFile(unittest.TestCase):
             f.path, self.fake_path, msg="The relative path assert failed"
         )
         
+        # Pass a Relative, Non-Normalized Path
+        non_normalized_path = "directory1\\directory2\\hello-world.txt"
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
         
+        f = File(self.fake_path)
+        f.path = non_normalized_path
+        
+        self.assertEqual(
+            f.path, expected_path, 
+            msg="The relative, non-normalized path assert failed"
+        )          
         
         return
     
