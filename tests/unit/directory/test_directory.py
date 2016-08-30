@@ -74,6 +74,13 @@ class TestDirectory(unittest.TestCase):
         )
         self.assertEqual(repr(d), expected_repr)
         return    
+    
+    def test_str(self):
+        """Test the informal string representation of an instance"""
+        self.fake_path = os.path.abspath("hello-world/")
+        d = Directory(self.fake_path)
+        self.assertEqual(str(d), self.fake_path)
+        return          
 
 
 if __name__ == "__main__":
