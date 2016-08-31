@@ -84,7 +84,7 @@ class Directory(_BaseFileAndDirectoryInterface):
         """
         # Raise an exception if the path refers to a file
         path_exists = os.path.exists(new_path)
-        path_is_a_file = os.path.isdir(new_path)
+        path_is_a_file = os.path.isfile(new_path)
         if path_exists and path_is_a_file:
             raise NotADirectoryError("The path refers to a file")
         
