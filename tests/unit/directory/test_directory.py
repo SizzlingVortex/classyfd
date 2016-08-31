@@ -98,6 +98,19 @@ class TestDirectory(unittest.TestCase):
             msg="The relative, non-normalized path assert failed"
         )          
         
+        return   
+    
+    def test_raise_exception_for_setting_path_to_a_file(self):
+        d = Directory(self.fake_path)
+        with tempfile.NamedTemporaryFile() as tf:
+            try:
+                d.path = tf.name
+            except NotADirectoryError:
+                # Do nothing, as this is the right exception to be raised
+                pass
+            else:
+                self.fail("A NotADirectoryError should have been raised")
+        
         return    
     
     def test_repr(self):
