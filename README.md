@@ -43,7 +43,7 @@ Standard Library.
 ---
 ### Status: Work-in-Progress
 
-*Classy*FD is still very much a work-in-progress and, although contains many automated tests to make the code robust, is not recommended for production (yet) due to the possibility of breaking changes in the API.
+*Classy*FD is still very much a work-in-progress and, although contains many automated tests to make the code robust, is not recommended for production (yet) due to the possibility of breaking changes in the API. However, production releases are planned once the API becomes more stable and when the official documentation is created.
 
 ---
 
