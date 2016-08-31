@@ -102,6 +102,21 @@ class Directory(_BaseFileAndDirectoryInterface):
     def group(self):
         pass   
     
+    @property
+    def is_dir(self):
+        """
+        Whether the object's path refers to a directory or not
+        
+        Normally, this method shouldn't need to be used since checks are made
+        on a given path when a Directory object is created and also if its value
+        changes later. However, this method becomes useful in any situation when
+        one isn't sure a path will always refer to a directory. For example, 
+        when a file replaces a directory (with the same path) on the file 
+        system, all after a Directory object is created.
+        
+        """
+        return os.path.isdir(self.path)    
+    
     # Regular Methods
     def get_parent(self, levels=1):
         """
