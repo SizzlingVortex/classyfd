@@ -2,6 +2,7 @@
 
 import os
 import pathlib
+import shutil
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
@@ -173,5 +174,20 @@ class Directory(_BaseFileAndDirectoryInterface):
     def rename(self):
         pass 
     
-    def remove(self):
-        pass    
+    def remove(self, empty_only=True):
+        """
+        Remove the directory
+        
+        Parameters:
+        empty_only -- (bool) If True, then the directory is only removed if it
+                      is empty. If False, then the directory and any files 
+                      and sub-directories are deleted. 
+        
+        """
+        if empty_only:
+            os.rmdir(self.path)
+        else:
+            # Delete the directory and anything in it
+            shutil.rmtree(self.path)
+        
+        return
