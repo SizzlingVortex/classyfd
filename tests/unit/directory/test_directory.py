@@ -7,6 +7,7 @@ import pathlib
 
 from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
+# Tests
 class TestDirectory(unittest.TestCase):
     def setUp(self):
         self.fake_path = os.path.abspath("hello-world-dir")
@@ -166,7 +167,70 @@ class TestDirectory(unittest.TestCase):
             msg="Directory path turned file path assert failed"
         )
         
-        return    
+        return   
+    
+    def test_remove_directory(self):
+        # An Empty Directory
+        td = tempfile.TemporaryDirectory()        
+        with TemporaryDirectoryHandler(td):
+            self.assertTrue(os.path.isdir(td.name))
+            
+            d = Directory(td.name)
+            d.remove()
+            self.assertFalse(
+                os.path.exists(td.name), msg="Empty directory assert failed"
+            )
+        
+        # A Non-Empty Directory
+        td = tempfile.TemporaryDirectory()
+        file = os.path.join(td.name, "hello-world.txt")
+        # Create a file and a sub-directory
+        with TemporaryDirectoryHandler(td):
+            with open(file, mode="w", encoding=config._ENCODING):
+                pass
+            os.mkdir(os.path.join(td.name, "some-sub-directory"))
+            d = Directory(td.name)
+            d.remove(empty_only=False)
+            self.assertFalse(
+                os.path.exists(d.path), 
+                msg="The non-empty directory assert failed"
+            )
+        
+        return
+    
+# Custom Classes (non-tests)  
+class TemporaryDirectoryHandler:
+    """This class should only be used (as a context manager) by tests that 
+    rename, move, or delete a temporary directory before the tempfile object's
+    .cleanup method is called. It can also be used by any tests that, for
+    whateve reason, can't or won't use the standard tempfile context manager."""
+    def __init__(self, temporary_directory):
+        """
+        Construct the object
+        
+        Parameters:
+        temporary_directory -- (tempfile object) needed so that its .close() 
+                                method can be called on it.
+        
+        """
+        self._temporary_directory = temporary_directory
+        return
+    
+    def __enter__(self):
+        # Nothing needs to happen here.
+        pass
+    
+    def __exit__(self, *args):
+        # Catch the FileNotFoundError on .cleanup() to avoid the calling test 
+        # outputting that it ignored an exception when the temporary file was
+        # garbage collected (i.e., when .__del__() is called).          
+        try:
+            self._temporary_directory.cleanup()
+        except FileNotFoundError:
+            # This is normal, since the file was closed.
+            pass         
+        
+        return
     
 
 
