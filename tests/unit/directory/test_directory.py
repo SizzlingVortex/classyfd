@@ -67,6 +67,39 @@ class TestDirectory(unittest.TestCase):
     
         return   
     
+    def test_set_path(self):
+        # Absolute Path Given
+        d = Directory(self.fake_path)
+        # Reassign the same path
+        d.path = self.fake_path
+        self.assertEqual(
+            d.path, self.fake_path, msg="The absolute path assert failed"
+        )
+        
+        # Relative Path Given
+        #
+        # Change the path to just the directory's name
+        d.path = d.name
+        self.assertEqual(
+            d.path, self.fake_path, msg="The relative path assert failed"
+        )
+        
+        # Pass a Relative, Non-Normalized Path
+        non_normalized_path = "directory1\\directory2\\hello-world.txt"
+        expected_path = utils.normalize_path(
+            os.path.abspath(non_normalized_path)
+        )
+        
+        d = Directory(self.fake_path)
+        d.path = non_normalized_path
+        
+        self.assertEqual(
+            d.path, expected_path, 
+            msg="The relative, non-normalized path assert failed"
+        )          
+        
+        return    
+    
     def test_repr(self):
         """Test the official string representation of an instance"""
         d = Directory(self.fake_path)
