@@ -70,7 +70,26 @@ class Directory(_BaseFileAndDirectoryInterface):
         (str)
         
         """
-        return self._path              
+        return self._path  
+    
+    @path.setter
+    def path(self, new_path):
+        """
+        Set the path of the directory
+        
+        Parameters:
+        new_path -- (str) the new path to assign. This can be an absolute or a
+                    relative path.
+        
+        """
+        # Raise an exception if the path refers to a file
+        path_exists = os.path.exists(new_path)
+        path_is_a_file = os.path.isdir(new_path)
+        if path_exists and path_is_a_file:
+            raise NotADirectoryError("The path refers to a file")
+        
+        self._path = utils.normalize_path(os.path.abspath(new_path))         
+        return    
     
     @property
     def exists(self):
