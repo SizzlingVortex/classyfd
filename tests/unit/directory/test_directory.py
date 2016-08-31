@@ -198,6 +198,19 @@ class TestDirectory(unittest.TestCase):
         
         return
     
+    def test_raise_exception_for_removing_non_empty_directory(self):
+        td = tempfile.TemporaryDirectory()
+        file = os.path.join(td.name, "hello-world.txt")
+        # Create a file and a sub-directory
+        with TemporaryDirectoryHandler(td):
+            with open(file, mode="w", encoding=config._ENCODING):
+                pass
+            os.mkdir(os.path.join(td.name, "some-sub-directory"))
+            d = Directory(td.name)
+            self.assertRaises(d.remove)        
+        
+        return
+    
 # Custom Classes (non-tests)  
 class TemporaryDirectoryHandler:
     """This class should only be used (as a context manager) by tests that 
