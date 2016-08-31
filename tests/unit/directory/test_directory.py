@@ -5,7 +5,7 @@ import os
 import tempfile
 import pathlib
 
-from classyfd import Directory, InvalidDirectoryValueError, utils
+from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
 class TestDirectory(unittest.TestCase):
     def setUp(self):
@@ -123,6 +123,49 @@ class TestDirectory(unittest.TestCase):
     def test_raise_exception_for_get_parent_with_negative_values(self):
         d = Directory(self.fake_path)
         self.assertRaises(InvalidDirectoryValueError, d.get_parent, levels=-1)
+        return    
+    
+    def test_is_a_directory(self):
+        # Fake Path
+        d = Directory(self.fake_path)
+        self.assertFalse(d.is_dir, msg="The fake path assert failed")
+        
+        # A Real Directory
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            self.assertTrue(d.is_dir, msg="Real directory assert failed")
+        
+        # The Directory No Longer Exists
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+        self.assertFalse(
+            d.is_dir, msg="Directory no longer exists assert failed"
+        )
+            
+        # Directory Path that Turns into a File Path
+        #
+        # First, create the directory
+        with tempfile.TemporaryDirectory() as td:
+            td_path = td
+            d = Directory(td)
+            self.assertTrue(d.is_dir)
+        
+        # The directory no longer exists
+        self.assertFalse(d.is_dir)
+        
+        # Now create the file using the same path the directory had
+        with open(td_path, mode="w", encoding=config._ENCODING):
+            pass
+        
+        self.assertFalse(
+            d.is_dir, 
+            msg="Directory path turned file path assert failed"
+        )
+        self.assertTrue(
+            os.path.isfile(td_path),
+            msg="Directory path turned file path assert failed"
+        )
+        
         return    
     
 
