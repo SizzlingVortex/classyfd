@@ -6,6 +6,7 @@ import tempfile
 import pathlib
 import platform
 import pwd
+import grp
 
 from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
@@ -306,6 +307,23 @@ class TestDirectoryUnixLike(unittest.TestCase):
             )            
         
         return
+    
+    def test_get_group_of_file(self):
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            GROUP = pathlib.Path(d.path).group()
+            
+            expected_group_name = grp.getgrnam(GROUP).gr_name
+            self.assertEqual(d.group["name"], expected_group_name)
+            
+            expected_group_id = grp.getgrnam(GROUP).gr_gid
+            self.assertEqual(d.group["id"], expected_group_id)
+            
+            expected_group_members = grp.getgrnam(GROUP).gr_mem
+            self.assertSequenceEqual(d.group["members"], expected_group_members)            
+        
+        return        
+    
     
     
 @unittest.skipUnless(OPERATING_SYSTEM == "windows", "Windows-only test")    
