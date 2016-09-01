@@ -336,6 +336,13 @@ class TestDirectoryWindows(unittest.TestCase):
                 d.owner
         return
     
+    def test_windows_raise_exception_for_group(self):
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            with self.assertRaises(NotImplementedError):
+                d.group
+        return     
+    
     
 # Custom Classes (non-tests)  
 class TemporaryDirectoryHandler:
