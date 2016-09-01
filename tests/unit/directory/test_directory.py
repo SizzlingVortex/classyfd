@@ -322,7 +322,61 @@ class TestDirectoryUnixLike(unittest.TestCase):
             expected_group_members = grp.getgrnam(GROUP).gr_mem
             self.assertSequenceEqual(d.group["members"], expected_group_members)            
         
-        return        
+        return   
+    
+    @unittest.skipUnless(IS_UNIX_LIKE_ROOT_USER, "Test requires running as root")
+    def test_change_owner_of_file(self):
+        td = tempfile.TemporaryDirectory()
+        with TemporaryDirectoryHandler(td):
+            d = Directory(td.name)
+            
+            ORIGINAL_OWNER_NAME = d.owner["username"]
+            ORIGINAL_OWNER_ID = d.owner["user_id"]
+            ORIGINAL_GROUP_NAME = d.group["name"]
+            ORIGINAL_GROUP_ID = d.group["id"]
+            
+            all_users_by_id = [u.pw_uid for u in pwd.getpwall()]
+            all_users_by_name = [u.pw_name for u in pwd.getpwall()]
+            
+            # Change the Owner via ID
+            if all_users_by_id[0] == ORIGINAL_OWNER_ID:
+                new_owner_id = all_users_by_id[1]
+            else:
+                new_owner_id = all_users_by_id[0]
+                
+            d.change_owner(new_owner_id)
+            self.assertEqual(
+                d.owner["user_id"], new_owner_id, 
+                msg="Change the owner, via user ID, assert failed"
+            )
+            self.assertEqual(
+                d.group["id"], ORIGINAL_GROUP_ID, 
+                msg=(
+                    "When changing the owner, via user ID, the group was "
+                    "changed as well."
+                )
+            )          
+    
+            # Change the Owner via Username
+            if all_users_by_name[0] == ORIGINAL_OWNER_ID:
+                new_owner_name = all_users_by_name[1]
+            else:
+                new_owner_name = all_users_by_name[0]
+                
+            d.change_owner(new_owner_name)
+            self.assertEqual(
+                d.owner["username"], new_owner_name, 
+                msg="Change the owner, via username, assert failed"
+            )
+            self.assertEqual(
+                d.group["name"], ORIGINAL_GROUP_NAME, 
+                msg=(
+                    "When changing the owner, via username, the group was "
+                    "changed as well."
+                )
+            )         
+        
+        return    
     
     
     
