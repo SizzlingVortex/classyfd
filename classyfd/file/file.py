@@ -285,7 +285,7 @@ class File(_BaseFileAndDirectoryInterface):
     def chmod(self):
         pass 
     
-    def change_owner(self, username):
+    def change_owner(self, user):
         """
         Change the owner of the file
         
@@ -301,7 +301,7 @@ class File(_BaseFileAndDirectoryInterface):
                 "File.change_owner() is not supported on Windows"
             )
         
-        shutil.chown(self.path, user=username)
+        shutil.chown(self.path, user=user)
         
         return        
     
