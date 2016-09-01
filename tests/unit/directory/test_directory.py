@@ -9,6 +9,7 @@ from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
 # Tests
 class TestDirectory(unittest.TestCase):
+    """Contains the cross-platform tests"""
     def setUp(self):
         self.fake_path = os.path.abspath("hello-world-dir")
         return
