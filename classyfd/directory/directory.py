@@ -4,6 +4,7 @@ import os
 import pathlib
 import shutil
 import pwd
+import grp
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
@@ -148,7 +149,32 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     @property
     def group(self):
-        pass   
+        """
+        Get the details of the group that owns the directory
+
+        Supported Operating Systems:
+        Unix-like
+
+        Return Value:
+        group -- (dict) contains the details for the group that owns the 
+                 directory. Specifically, it contains the group's id, name, and
+                 its members. Its keys are id, name, and members.
+
+        """
+        if config._OPERATING_SYSTEM == "windows":
+            raise NotImplementedError(
+                "Directory.group is not supported on Windows"
+            )       
+    
+        # Get the group's details from the group database
+        grp_group = grp.getgrnam(pathlib.Path(self.path).group())
+    
+        group = {}
+        group["name"] = grp_group.gr_name
+        group["id"] = grp_group.gr_gid
+        group["members"] = grp_group.gr_mem
+    
+        return group           
     
     @property
     def is_dir(self):
