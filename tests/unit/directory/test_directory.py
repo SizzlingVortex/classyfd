@@ -395,7 +395,14 @@ class TestDirectoryWindows(unittest.TestCase):
             d = Directory(td)
             with self.assertRaises(NotImplementedError):
                 d.group
-        return     
+        return  
+    
+    def test_windows_raise_exception_for_change_owner(self):
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            self.assertRaises(NotImplementedError, d.change_owner)
+
+        return    
     
     
 # Custom Classes (non-tests)  
