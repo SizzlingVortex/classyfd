@@ -276,7 +276,7 @@ class TestDirectory(unittest.TestCase):
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
 class TestDirectoryUnixLike(unittest.TestCase):
     """Containst the tests specifically for Unix-like operating systems"""
-    def test_get_owner_of_file(self):
+    def test_get_owner_of_directory(self):
         
         with tempfile.TemporaryDirectory() as td:
             d = Directory(td)
@@ -308,7 +308,7 @@ class TestDirectoryUnixLike(unittest.TestCase):
         
         return
     
-    def test_get_group_of_file(self):
+    def test_get_group_of_directory(self):
         with tempfile.TemporaryDirectory() as td:
             d = Directory(td)
             GROUP = pathlib.Path(d.path).group()
@@ -325,7 +325,7 @@ class TestDirectoryUnixLike(unittest.TestCase):
         return   
     
     @unittest.skipUnless(IS_UNIX_LIKE_ROOT_USER, "Test requires running as root")
-    def test_change_owner_of_file(self):
+    def test_change_owner_of_directory(self):
         td = tempfile.TemporaryDirectory()
         with TemporaryDirectoryHandler(td):
             d = Directory(td.name)
