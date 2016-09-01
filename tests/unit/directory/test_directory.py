@@ -305,7 +305,19 @@ class TestDirectoryUnixLike(unittest.TestCase):
                 msg="The directories are not equal"
             )            
         
-        return    
+        return
+    
+    
+@unittest.skipUnless(OPERATING_SYSTEM == "windows", "Windows-only test")    
+class TestDirectoryWindows(unittest.TestCase):
+    """Contains the tests specifically for Windows"""
+    def test_windows_raise_exception_for_owner(self):
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            with self.assertRaises(NotImplementedError):
+                d.owner
+        return
+    
     
 # Custom Classes (non-tests)  
 class TemporaryDirectoryHandler:
