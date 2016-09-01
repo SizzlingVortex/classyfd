@@ -272,7 +272,40 @@ class TestDirectory(unittest.TestCase):
         return
 
 
-   
+@unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
+class TestDirectoryUnixLike(unittest.TestCase):
+    """Containst the tests specifically for Unix-like operating systems"""
+    def test_get_owner_of_file(self):
+        
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            OWNER = pathlib.Path(d.path).owner()
+            
+            expected_owner_username = pwd.getpwnam(OWNER).pw_name
+            self.assertEqual(
+                d.owner["username"], expected_owner_username, 
+                msg="The owner usernames are not equal"
+            )
+            
+            expected_owner_user_id = pwd.getpwnam(OWNER).pw_uid
+            self.assertEqual(
+                d.owner["user_id"], expected_owner_user_id, 
+                msg="The owner IDs are not equal"
+            )
+            
+            expected_owner_group_id = pwd.getpwnam(OWNER).pw_gid
+            self.assertEqual(
+                d.owner["group_id"], expected_owner_group_id, 
+                msg="The group IDs are not equal"
+            )
+            
+            expected_owner_directory = pwd.getpwnam(OWNER).pw_dir
+            self.assertEqual(
+                d.owner["directory"], expected_owner_directory, 
+                msg="The directories are not equal"
+            )            
+        
+        return    
     
 # Custom Classes (non-tests)  
 class TemporaryDirectoryHandler:
