@@ -378,6 +378,59 @@ class TestDirectoryUnixLike(unittest.TestCase):
         
         return    
     
+    @unittest.skipUnless(IS_UNIX_LIKE_ROOT_USER, "Test requires running as root")
+    def test_change_group_of_directory(self):
+        td = tempfile.TemporaryDirectory()    
+        with TemporaryDirectoryHandler(td):
+            d = Directory(td.name)
+            
+            ORIGINAL_OWNER_NAME = d.owner["username"]
+            ORIGINAL_OWNER_ID = d.owner["user_id"]
+            ORIGINAL_GROUP_NAME = d.group["name"]
+            ORIGINAL_GROUP_ID = d.group["id"]
+            
+            all_groups_by_id = [u.pw_uid for u in pwd.getpwall()]
+            all_groups_by_name = [u.pw_name for u in pwd.getpwall()]
+            
+            # Change the Group via ID
+            if all_groups_by_id[0] == ORIGINAL_GROUP_ID:
+                new_group_id = all_groups_by_id[1]
+            else:
+                new_group_id = all_groups_by_id[0]
+                
+            d.change_group(new_group_id)
+            self.assertEqual(
+                d.group["id"], new_group_id, 
+                msg="Change the group, via group ID, assert failed"
+            )
+            self.assertEqual(
+                d.owner["user_id"], ORIGINAL_OWNER_ID, 
+                msg=(
+                    "When changing the group, via ID, the group was "
+                    "changed as well."
+                )
+            )          
+    
+            # Change the Group via its Name
+            if all_groups_by_name[0] == ORIGINAL_OWNER_ID:
+                new_group_name = all_groups_by_name[1]
+            else:
+                new_group_name = all_groups_by_name[0]
+                
+            d.change_group(new_group_name)
+            self.assertEqual(
+                d.group["name"], new_group_name, 
+                msg="Change the group, via name, assert failed"
+            )
+            self.assertEqual(
+                d.owner["username"], ORIGINAL_GROUP_NAME, 
+                msg=(
+                    "When changing the group, via name, the owner was "
+                    "changed as well."
+                )
+            )                 
+        return      
+    
     
     
 @unittest.skipUnless(OPERATING_SYSTEM == "windows", "Windows-only test")    
