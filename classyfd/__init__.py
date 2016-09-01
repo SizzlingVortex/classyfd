@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2016 Joshua Goring"
 
 # The Public API
 from .file import File
+from .directory import Directory
 from .exceptions import (
     Error, FileError, InvalidFileValueError, DirectoryError, 
     InvalidDirectoryValueError
