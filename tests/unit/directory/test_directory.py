@@ -4,6 +4,7 @@ import unittest
 import os
 import tempfile
 import pathlib
+import platform
 
 from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
@@ -268,6 +269,7 @@ class TestDirectory(unittest.TestCase):
             self.assertRaises(d.remove)        
         
         return
+    
     
 # Custom Classes (non-tests)  
 class TemporaryDirectoryHandler:
