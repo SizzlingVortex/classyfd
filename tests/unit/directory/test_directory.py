@@ -7,6 +7,17 @@ import pathlib
 
 from classyfd import Directory, InvalidDirectoryValueError, utils, config
 
+
+# Globals
+OPERATING_SYSTEM = platform.system().lower()
+IS_OS_POSIX_COMPLIANT = utils.determine_if_os_is_posix_compliant()
+
+IS_UNIX_LIKE_ROOT_USER = None
+if IS_OS_POSIX_COMPLIANT:
+    # Determine if the User Running Python is "root" or not
+    IS_UNIX_LIKE_ROOT_USER = utils.determine_if_running_as_root_user()
+    
+
 # Tests
 class TestDirectory(unittest.TestCase):
     """Contains the cross-platform tests"""
