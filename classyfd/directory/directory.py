@@ -253,8 +253,25 @@ class Directory(_BaseFileAndDirectoryInterface):
         return        
                
     
-    def change_group(self):
-        pass             
+    def change_group(self, group):
+        """
+        Change the group of the directory
+        
+        Parameters:
+        group -- (str or int) the group name or ID that should own the directory
+
+        Supported Operating Systems:
+        Unix-like
+
+        """        
+        if config._OPERATING_SYSTEM == "windows":
+            raise NotImplementedError(
+                "Directory.change_group() is not supported on Windows"
+            )
+        
+        shutil.chown(self.path, group=group)
+        
+        return                    
     
     def copy(self):
         pass
