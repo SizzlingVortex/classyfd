@@ -232,8 +232,26 @@ class Directory(_BaseFileAndDirectoryInterface):
     def chmod(self):
         pass 
     
-    def change_owner(self):
-        pass       
+    def change_owner(self, user):
+        """
+        Change the owner of the directory
+        
+        Parameters:
+        user -- (str or int) the username or ID that should own the directory
+        
+        Supported Operating Systems:
+        Unix-like
+        
+        """
+        if config._OPERATING_SYSTEM == "windows":
+            raise NotImplementedError(
+                "Directory.change_owner() is not supported on Windows"
+            )
+        
+        shutil.chown(self.path, user=user)
+        
+        return        
+               
     
     def change_group(self):
         pass             
