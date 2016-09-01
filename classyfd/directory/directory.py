@@ -3,10 +3,11 @@
 import os
 import pathlib
 import shutil
+import pwd
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
-from .. import utils
+from .. import utils, config
 
 
 class Directory(_BaseFileAndDirectoryInterface):
@@ -116,7 +117,34 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     @property
     def owner(self):
-        pass  
+        """
+        Get the details of the user that owns the directory
+
+        Supported Operating Systems:
+        Unix-like
+
+        Return Value:
+        user -- (dict) contains the details of the user that owns the directory.
+                Specifically, it contains the user's username, user_id, 
+                group_id, and home directory. The keys are username, user_id,
+                group_id, and directory.
+
+        """
+        if config._OPERATING_SYSTEM == "windows":
+            raise NotImplementedError(
+                "Directory.owner is not supported on Windows"
+            ) 
+    
+        # Get the owner's details from the user account and password database
+        pwd_user = pwd.getpwnam(pathlib.Path(self.path).owner())
+    
+        user = {}
+        user["username"] = pwd_user.pw_name
+        user["user_id"] = pwd_user.pw_uid
+        user["group_id"] = pwd_user.pw_gid
+        user["directory"] = pwd_user.pw_dir
+    
+        return user
     
     @property
     def group(self):
