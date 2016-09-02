@@ -809,14 +809,14 @@ class TestFileWindows(unittest.TestCase):
     def test_windows_raise_exception_for_change_owner(self):
         with tempfile.NamedTemporaryFile() as tf:
             f = File(tf.name)
-            self.assertRaises(NotImplementedError, f.change_owner)
+            self.assertRaises(NotImplementedError, f.change_owner, 1)
 
         return
     
     def test_windows_raise_exception_for_change_group(self):
         with tempfile.NamedTemporaryFile() as tf:
             f = File(tf.name)
-            self.assertRaises(NotImplementedError, f.change_group)
+            self.assertRaises(NotImplementedError, f.change_group, 1)
 
         return     
     
