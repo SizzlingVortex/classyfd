@@ -5,8 +5,12 @@ import os
 import tempfile
 import pathlib
 import platform
-import pwd
-import grp
+# Unix-like Only Imports
+try:
+    import pwd
+    import grp
+except ImportError:
+    pass
 
 from classyfd import Directory, InvalidDirectoryValueError, utils, config
 

@@ -5,10 +5,14 @@ outside of it.
 """
 
 import os
-import pwd
 import string
 import random
 import re
+# Unix-like Only Imports
+try:
+    import pwd
+except ImportError:
+    pass
 
 
 # Operating System Functions

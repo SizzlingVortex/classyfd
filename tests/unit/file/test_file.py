@@ -5,10 +5,13 @@ import tempfile
 import os
 import pathlib
 import shutil
-import pwd
-import grp
 import platform
-
+# Unix-like Only Imports
+try:
+    import pwd
+    import grp
+except ImportError:
+    pass
 
 from classyfd import File, FileError, InvalidFileValueError, utils
 
