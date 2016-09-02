@@ -2,10 +2,14 @@
 
 import unittest
 import os
-import pwd
 import re
 import platform
 from tempfile import NamedTemporaryFile
+# Unix-like Only Imports
+try:
+    import pwd
+except ImportError:
+    pass
 
 from classyfd import File, utils
 

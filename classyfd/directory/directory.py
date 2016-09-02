@@ -3,8 +3,12 @@
 import os
 import pathlib
 import shutil
-import pwd
-import grp
+# Unix-like Only Imports
+try:
+    import pwd
+    import grp
+except ImportError:
+    pass
 
 from ..base import _BaseFileAndDirectoryInterface
 from ..exceptions import InvalidDirectoryValueError
