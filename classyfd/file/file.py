@@ -390,6 +390,37 @@ class File(_BaseFileAndDirectoryInterface):
         os.remove(self.path)
         return
     
+    def open(self, *args, **kwargs):
+        """
+        Open the file and return a standard Python file object
+        
+        This method is a wrapper for Python's built-in open() function.
+        Therefore, when using it, it should feel nearly the same as using
+        Python's open() itself. The only real difference is that no path to a 
+        file should be given as an argument since this method takes care of that
+        internally.
+        
+        Generally speaking, this method is not meant to replace the use of
+        Python's open() function. It is, however, provided as a convenience
+        method -- and should be used when one needs to perform operations on a
+        file (that an instance of this class refers to) in the same way that one
+        would if they were just using Python's open() function.
+        
+        Parameters:
+        The same arguments that Python's built-in open() function takes
+        can be used here as well.
+        
+        Return Value:
+        A standard Python file object (text file, raw binary file, or a 
+        buffered binary file).
+        
+        More Information:
+        As this is just a wrapper for Python's built-in open() function,
+        please see Python's documentation for what else this method can do.
+        
+        """
+        return open(self.path, *args, **kwargs)
+    
     # Private Methods
     def _execute_rename(self, directory, new_file_name=None,
                         replace_existing_file=False):

@@ -6,6 +6,7 @@ import os
 import pathlib
 import shutil
 import platform
+import io
 # Unix-like Only Imports
 try:
     import pwd
@@ -13,7 +14,7 @@ try:
 except ImportError:
     pass
 
-from classyfd import File, FileError, InvalidFileValueError, utils
+from classyfd import File, FileError, InvalidFileValueError, utils, config
 
 
 # Globals
@@ -621,7 +622,63 @@ class TestFile(unittest.TestCase):
             msg="File path turned directory path assert failed"
         )
         
-        return  
+        return
+    
+    def test_open_returns_file_object(self):
+        
+        # Text File Object
+        with tempfile.NamedTemporaryFile(mode="w", encoding=config._ENCODING) as tf:
+            my_file = File(tf.name) 
+            # Non-context manager
+            f = my_file.open()
+            try:
+                self.assertIsInstance(
+                    f, io.TextIOBase, 
+                    msg="The text file, non-context manager, assert failed"
+                )
+            except Exception:
+                # Included only to follow the syntax rules
+                raise
+            else:
+                f.close()
+            
+            # Context manager
+            with my_file.open() as f:
+                pass
+            self.assertIsInstance(
+                f, io.TextIOBase, 
+                msg="The text file, context manager, assert failed"
+            )            
+                
+        # Binary File Object
+        with tempfile.NamedTemporaryFile(mode="wb") as tf:
+            my_file = File(tf.name) 
+            # Non-context manager
+            f = my_file.open(mode="wb")
+            try:
+                self.assertIsInstance(
+                    f, (io.BufferedIOBase, io.RawIOBase), 
+                    msg="The binary file, non-context manager, assert failed"
+                )
+            except Exception:
+                # Included only to follow the syntax rules
+                raise
+            else:
+                f.close()
+            
+            # Context manager
+            with my_file.open(mode="wb") as f:
+                self.assertIsInstance(
+                    f, (io.BufferedIOBase, io.RawIOBase), 
+                    msg="The binary file, context manager, assert failed"
+                )                
+        
+        return
+    
+    def test_raise_exception_when_path_passed_to_open(self):
+        my_file = File(self.fake_path)
+        self.assertRaises(ValueError, my_file.open, self.fake_path)
+        return
     
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
