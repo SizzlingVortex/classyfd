@@ -628,32 +628,50 @@ class TestFile(unittest.TestCase):
         
         # Text File Object
         with tempfile.NamedTemporaryFile(mode="w", encoding=config._ENCODING) as tf:
-            my_file = File(tf.name)            
+            my_file = File(tf.name) 
+            # Non-context manager
             f = my_file.open()
             try:
                 self.assertIsInstance(
-                    f, io.TextIOBase, msg="The text file assert failed"
+                    f, io.TextIOBase, 
+                    msg="The text file, non-context manager, assert failed"
                 )
             except Exception:
                 # Included only to follow the syntax rules
                 raise
             else:
                 f.close()
+            
+            # Context manager
+            with my_file.open() as f:
+                pass
+            self.assertIsInstance(
+                f, io.TextIOBase, 
+                msg="The text file, context manager, assert failed"
+            )            
                 
         # Binary File Object
         with tempfile.NamedTemporaryFile(mode="wb") as tf:
-            my_file = File(tf.name)            
+            my_file = File(tf.name) 
+            # Non-context manager
             f = my_file.open(mode="wb")
             try:
                 self.assertIsInstance(
                     f, (io.BufferedIOBase, io.RawIOBase), 
-                    msg="The binary file assert failed"
+                    msg="The binary file, non-context manager, assert failed"
                 )
             except Exception:
                 # Included only to follow the syntax rules
                 raise
             else:
-                f.close()        
+                f.close()
+            
+            # Context manager
+            with my_file.open(mode="wb") as f:
+                self.assertIsInstance(
+                    f, (io.BufferedIOBase, io.RawIOBase), 
+                    msg="The binary file, context manager, assert failed"
+                )                
         
         return
     
