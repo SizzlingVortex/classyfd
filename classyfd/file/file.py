@@ -407,9 +407,7 @@ class File(_BaseFileAndDirectoryInterface):
         buffered binary file).
         
         """
-        python_file_object = open(self.path, **kwargs)
-        
-        return python_file_object
+        return open(self.path, **kwargs)
     
     # Private Methods
     def _execute_rename(self, directory, new_file_name=None,
