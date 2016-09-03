@@ -675,6 +675,11 @@ class TestFile(unittest.TestCase):
         
         return
     
+    def test_raise_exception_when_path_passed_to_open(self):
+        my_file = File(self.fake_path)
+        self.assertRaises(ValueError, my_file.open, self.fake_path)
+        return
+    
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
 class TestFileUnixLike(unittest.TestCase):
