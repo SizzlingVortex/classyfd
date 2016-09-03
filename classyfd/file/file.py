@@ -390,7 +390,7 @@ class File(_BaseFileAndDirectoryInterface):
         os.remove(self.path)
         return
     
-    def open(self, **kwargs):
+    def open(self, *args, **kwargs):
         """
         Open the file and return a standard Python file object
         
@@ -399,7 +399,7 @@ class File(_BaseFileAndDirectoryInterface):
         given as an argument since this method takes care of that internally.
         
         Parameters:
-        The same keyword arguments that Python's built-in open() function takes
+        The same arguments that Python's built-in open() function takes
         can be used here as well.
         
         Return Value:
@@ -407,7 +407,7 @@ class File(_BaseFileAndDirectoryInterface):
         buffered binary file).
         
         """
-        return open(self.path, **kwargs)
+        return open(self.path, *args, **kwargs)
     
     # Private Methods
     def _execute_rename(self, directory, new_file_name=None,
