@@ -17,7 +17,7 @@ Standard Library.
 >>> 
 >>> # Create a File object (absolute and relative paths are supported)
 >>> f = File("hello-world.txt")
->>> # The owner of the file
+>>> # The owner of the file (Unix-like systems only)
 >>> f.owner["username"]
 'sizzlingvortex'
 >>> # The full, absolute path
