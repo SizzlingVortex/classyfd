@@ -6,6 +6,7 @@ import os
 import pathlib
 import shutil
 import platform
+import io
 # Unix-like Only Imports
 try:
     import pwd
@@ -13,7 +14,7 @@ try:
 except ImportError:
     pass
 
-from classyfd import File, FileError, InvalidFileValueError, utils
+from classyfd import File, FileError, InvalidFileValueError, utils, config
 
 
 # Globals
@@ -621,7 +622,40 @@ class TestFile(unittest.TestCase):
             msg="File path turned directory path assert failed"
         )
         
-        return  
+        return
+    
+    def test_open_returns_file_object(self):
+        
+        # Text File Object
+        with tempfile.NamedTemporaryFile(mode="w", encoding=config._ENCODING) as tf:
+            my_file = File(tf.name)            
+            f = my_file.open()
+            try:
+                self.assertIsInstance(
+                    f, io.TextIOBase, msg="The text file assert failed"
+                )
+            except Exception:
+                # Included only to follow the syntax rules
+                raise
+            else:
+                f.close()
+                
+        # Binary File Object
+        with tempfile.NamedTemporaryFile(mode="wb") as tf:
+            my_file = File(tf.name)            
+            f = my_file.open(mode="wb")
+            try:
+                self.assertIsInstance(
+                    f, (io.BufferedIOBase, io.RawIOBase), 
+                    msg="The binary file assert failed"
+                )
+            except Exception:
+                # Included only to follow the syntax rules
+                raise
+            else:
+                f.close()        
+        
+        return
     
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
