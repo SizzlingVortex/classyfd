@@ -37,7 +37,7 @@ Standard Library.
 >>> f.move("/home/sizzlingvortex/Desktop/")
 >>> f.path
 '/home/sizzlingvortex/Desktop/whats-up-world.txt'
->>> # File.open() is nearly the same as Python's open() function
+>>> # A File object's open() method works nearly the same as Python's open() function
 >>> my_file = File("greeting.txt")
 >>> with my_file.open(mode="w") as f:
         f.write("Hello, world!")
