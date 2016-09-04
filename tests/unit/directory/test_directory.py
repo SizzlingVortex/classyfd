@@ -427,7 +427,7 @@ class TestDirectoryUnixLike(unittest.TestCase):
                 msg="Change the group, via name, assert failed"
             )
             self.assertEqual(
-                d.owner["username"], ORIGINAL_GROUP_NAME, 
+                d.owner["username"], ORIGINAL_OWNER_NAME, 
                 msg=(
                     "When changing the group, via name, the owner was "
                     "changed as well."
