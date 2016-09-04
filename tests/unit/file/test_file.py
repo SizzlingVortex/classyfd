@@ -832,7 +832,7 @@ class TestFileUnixLike(unittest.TestCase):
             self.assertEqual(
                 f.owner["user_id"], ORIGINAL_OWNER_ID, 
                 msg=(
-                    "When changing the group, via ID, the group was "
+                    "When changing the group, via ID, the owner was "
                     "changed as well."
                 )
             )          
@@ -849,7 +849,7 @@ class TestFileUnixLike(unittest.TestCase):
                 msg="Change the group, via name, assert failed"
             )
             self.assertEqual(
-                f.owner["username"], ORIGINAL_GROUP_NAME, 
+                f.owner["username"], ORIGINAL_OWNER_NAME, 
                 msg=(
                     "When changing the group, via name, the owner was "
                     "changed as well."
