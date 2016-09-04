@@ -627,7 +627,14 @@ class TestFile(unittest.TestCase):
     def test_open_returns_file_object(self):
         
         # Text File Object
-        with tempfile.NamedTemporaryFile(mode="w", encoding=config._ENCODING) as tf:
+        #
+        # Keep the file after closing it
+        tf = tempfile.NamedTemporaryFile(
+            mode="w", encoding=config._ENCODING, delete=False
+        )
+        tf.close()
+        
+        with TemporaryFileHandler(tf):
             my_file = File(tf.name) 
             # Non-context manager
             f = my_file.open()
@@ -651,7 +658,12 @@ class TestFile(unittest.TestCase):
             )            
                 
         # Binary File Object
-        with tempfile.NamedTemporaryFile(mode="wb") as tf:
+        #
+        # Keep the file after closing it
+        tf = tempfile.NamedTemporaryFile(mode="wb")
+        tf.close()
+        
+        with TemporaryFileHandler(tf):
             my_file = File(tf.name) 
             # Non-context manager
             f = my_file.open(mode="wb")
