@@ -99,7 +99,7 @@ class Directory(_BaseFileAndDirectoryInterface):
     
     @property
     def exists(self):
-        pass
+        return os.path.exists(self.path)
     
     @property
     def created_on(self):

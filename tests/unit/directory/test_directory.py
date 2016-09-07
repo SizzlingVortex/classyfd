@@ -275,6 +275,18 @@ class TestDirectory(unittest.TestCase):
             self.assertRaises(d.remove)        
         
         return
+    
+    def test_directory_exists(self):
+        # The Directory Will not Exist
+        d = Directory(self.fake_path)
+        self.assertFalse(d.exists, msg="The directory should not exist")
+        
+        # The Directory Will Exist
+        with tempfile.TemporaryDirectory() as td:
+            d = Directory(td)
+            self.assertTrue(d.exists, msg="The directory should exist")
+        
+        return    
 
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
