@@ -5,6 +5,7 @@ import os
 import tempfile
 import pathlib
 import platform
+import shutil
 # Unix-like Only Imports
 try:
     import pwd
@@ -286,7 +287,38 @@ class TestDirectory(unittest.TestCase):
             d = Directory(td)
             self.assertTrue(d.exists, msg="The directory should exist")
         
-        return    
+        return   
+    
+    def test_rename_directory(self):
+        td = tempfile.TemporaryDirectory()
+        with TemporaryDirectoryHandler(td):
+            # The base directory will be the same for both the original and 
+            # renamed directory.
+            BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+            
+            # Rename the Directory
+            renamed_directory_name = utils.get_random_file_name(BASE_DIRECTORY)
+            expected_new_directory_path = os.path.join(
+                BASE_DIRECTORY, renamed_directory_name
+            )
+            
+            self.assertFalse(
+                os.path.exists(expected_new_directory_path), 
+                msg=(
+                    "The directory can't be renamed because the path already "
+                    "exists."
+                )
+            )
+            
+            d = Directory(td.name)
+            d.rename(renamed_directory_name)
+            self.assertTrue(
+                os.path.exists(expected_new_directory_path), 
+                msg="The directory was not renamed"
+            )
+            
+        return
+    
 
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
