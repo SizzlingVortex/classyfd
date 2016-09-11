@@ -345,6 +345,18 @@ class TestDirectory(unittest.TestCase):
         
         return
     
+    def test_rename_updates_path(self):
+        """If a Directory object is renamed, then its path should be updated"""
+        td = tempfile.TemporaryDirectory()
+        with TemporaryDirectoryHandler(td):
+            BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+            d = Directory(td.name)
+            new_directory_name = utils.get_random_directory_name(BASE_DIRECTORY)
+            expected_path = os.path.join(BASE_DIRECTORY, new_directory_name)                        
+            d.rename(new_directory_name)
+            self.assertEqual(d.path, expected_path)
+            
+        return    
     
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
