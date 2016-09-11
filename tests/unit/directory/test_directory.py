@@ -322,6 +322,30 @@ class TestDirectory(unittest.TestCase):
             
         return
     
+    def test_raise_exception_for_rename_with_path(self):
+        """
+        An exception should be raised when a path (instead of just a new
+        directory name) is given. This is likely to occur if a user thinks
+        rename is just like GNU mv -- in which mv actually accepts paths.
+        
+        """
+        td = tempfile.TemporaryDirectory()
+        BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+        
+        # Try to Rename the Directory
+        with TemporaryDirectoryHandler(td):
+            renamed_directory_name = utils.get_random_file_name(BASE_DIRECTORY)
+            new_directory_path = (
+                os.path.join(BASE_DIRECTORY, renamed_directory_name)
+            )
+            d = Directory(td.name)
+            self.assertRaises(
+                InvalidDirectoryValueError, d.rename, new_directory_path
+            )
+        
+        return
+    
+    
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
 class TestDirectoryUnixLike(unittest.TestCase):
