@@ -413,13 +413,8 @@ class TestFile(unittest.TestCase):
             new_file_name = utils.get_random_file_name(BASE_DIRECTORY)
             expected_path = os.path.join(BASE_DIRECTORY, new_file_name)            
             
-            try:
-                f.rename(new_file_name)
-                self.assertEqual(f.path, expected_path)
-            finally:
-                # Delete the newly renamed file so that future test runs don't
-                # raise a FileExistsError.
-                os.remove(expected_path)
+            f.rename(new_file_name)
+            self.assertEqual(f.path, expected_path)
                 
         return
     
