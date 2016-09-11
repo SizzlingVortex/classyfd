@@ -90,6 +90,44 @@ def get_random_file_name(directory):
     return random_file_name
 
 
+def get_random_directory_name(directory):
+    """
+    Generate a random, unique directory name of 32 characters
+    
+    The generated directory name may include lowercase letters and numbers.
+    
+    Parameters:
+    directory -- (str) the base directory the directory will be in. This will
+                 determine the unique name given to it.
+    
+    Return Value:
+    (str) this is just a randomly generated directory name, so the full/absolute
+    path is not included.
+    
+    """
+    CHARACTER_LENGTH = 32
+    NUMBERS = string.digits
+    LETTERS = string.ascii_lowercase
+    VALID_CHARACTERS = tuple(LETTERS + NUMBERS)
+    
+    while True:
+        random_directory_name = ""
+        for i in range(CHARACTER_LENGTH):
+            random_directory_name += random.choice(VALID_CHARACTERS)
+        
+        directory_path_already_exists = os.path.exists(
+            os.path.join(directory, random_directory_name)
+        )
+        if directory_path_already_exists:
+            # Try again
+            continue
+        else:
+            # Sweet, use the generated directory name
+            break
+    
+    return random_directory_name
+
+
 def normalize_path(path):
     """
     Normalize a file or directory's path
