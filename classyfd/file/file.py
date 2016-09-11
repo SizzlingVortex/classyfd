@@ -369,11 +369,11 @@ class File(_BaseFileAndDirectoryInterface):
                          if any slashes are included because this method will
                          think the value is that of a path rather than a
                          file name only.                         
-        replace_existing_file (bool) if the path of the new file name already
-                              exists, then this variable determines what action
-                              to take. If False, then a FileExistsError is 
-                              raised. If True, then the existing file gets
-                              replaced with this one.
+        replace_existing_file -- (bool) if the path of the new file name already
+                                  exists, then this variable determines what 
+                                  action to take. If False, then a 
+                                  FileExistsError is raised. If True, then the
+                                  existing file gets replaced with this one.
         
         """
         DIRECTORY = self.parent
@@ -435,11 +435,11 @@ class File(_BaseFileAndDirectoryInterface):
         new_file_name -- (str) the file's name will be renamed to 
                          this. This should just be the new name of the file
                          (including any file extensions), so no paths.
-        replace_existing_file (bool) if the path of the new file name already
-                              exists, then this variable determines what action
-                              to take. If False, then a FileExistsError is 
-                              raised. If True, then the existing file gets
-                              replaced with this one.
+        replace_existing_file -- (bool) if the path of the new file name already
+                                 exists, then this variable determines what 
+                                 action to take. If False, then a 
+                                 FileExistsError is raised. If True, then the
+                                 existing file gets replaced with this one.
         
         """
         SLASHES = ("\\", "/")         
