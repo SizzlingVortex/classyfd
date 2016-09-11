@@ -395,10 +395,11 @@ class TestFile(unittest.TestCase):
         BASE_DIRECTORY = str(pathlib.Path(tf.name).parent)
         
         # Try to Rename the File
-        renamed_file_name = utils.get_random_file_name(BASE_DIRECTORY)
-        new_file_path = os.path.join(BASE_DIRECTORY, renamed_file_name)
-        f = File(tf.name)
-        self.assertRaises(InvalidFileValueError, f.rename, new_file_path)
+        with TemporaryFileHandler(tf):
+            renamed_file_name = utils.get_random_file_name(BASE_DIRECTORY)
+            new_file_path = os.path.join(BASE_DIRECTORY, renamed_file_name)
+            f = File(tf.name)
+            self.assertRaises(InvalidFileValueError, f.rename, new_file_path)
         
         return
     
