@@ -442,6 +442,10 @@ class File(_BaseFileAndDirectoryInterface):
                                  existing file gets replaced with this one.
         
         """
+        # Initialize these for later (conditional) use
+        path_refers_to_file = None
+        path_refers_to_directory = None
+        
         SLASHES = ("\\", "/")         
         if new_file_name and any(c in new_file_name for c in SLASHES):
             # The new file name is likely a path, rather than just a file name.
@@ -454,14 +458,24 @@ class File(_BaseFileAndDirectoryInterface):
         else:
             new_file_path = os.path.join(directory, self.name)
         
-        file_already_exists = os.path.exists(new_file_path)
-        if file_already_exists and not replace_existing_file:
-            raise FileExistsError(
-                "Cannot rename the file because a file with the chosen name "
-                "already exists"
-            )         
+        path_already_exists = os.path.exists(new_file_path)
+        if path_already_exists:
+            path_refers_to_file = os.path.isfile(new_file_path)
+            path_refers_to_directory = os.path.isdir(new_file_path)
         
-        elif file_already_exists and replace_existing_file:
+        if path_already_exists and not replace_existing_file:
+            if path_refers_to_file:
+                raise FileExistsError(
+                    "Cannot rename the file because a file with the chosen name"
+                    " already exists"
+                )
+            elif path_refers_to_directory:
+                raise IsADirectoryError(
+                    "Cannot rename the file because a directory with the chosen"
+                    " name already exists"
+                )   
+        
+        elif path_already_exists and replace_existing_file:
             # os.replace() is the Python-recommended way of doing cross-platform
             # file replaces, rather than os.rename().
             os.replace(self.path, new_file_path)

@@ -423,18 +423,29 @@ class TestFile(unittest.TestCase):
         return
     
     def test_raise_exception_on_rename_to_existing_path(self):
-        """If a file is renamed to a file whose path already exists, then an 
-        exception should be raised."""
+        # The Existing Path Refers to an Existing File
+        #
         # Create two temporary files
         tf1 = tempfile.NamedTemporaryFile()
         tf1_file_name = File(tf1.name).name
         tf2 = tempfile.NamedTemporaryFile()
-        
         # Try to rename the second temporary file to that of the first
         with TemporaryFileHandler(tf1):
             with TemporaryFileHandler(tf2):
                 f = File(tf2.name)
-                self.assertRaises(FileExistsError, f.rename, tf1_file_name)
+                with self.assertRaises(FileExistsError, msg="Existing file assert failed"):
+                    f.rename(tf1_file_name)
+        
+        # The Existing Path Refers to an Existing Directory
+        tf = tempfile.NamedTemporaryFile()
+        td = tempfile.TemporaryDirectory()
+        td_name = os.path.split(td.name)[1]
+        # Try to rename the temporary file to that of the temporary directory
+        with TemporaryDirectoryHandler(td):
+            with TemporaryFileHandler(tf):
+                f = File(tf.name)
+                with self.assertRaises(IsADirectoryError, msg="Existing directory assert failed"):
+                    f.rename(td_name)                
         
         return
     
