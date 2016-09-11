@@ -297,7 +297,10 @@ class TestDirectory(unittest.TestCase):
             BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
             
             # Rename the Directory
-            renamed_directory_name = utils.get_random_file_name(BASE_DIRECTORY)
+            renamed_directory_name = (
+                utils.get_random_directory_name(BASE_DIRECTORY)
+            )
+            
             expected_new_directory_path = os.path.join(
                 BASE_DIRECTORY, renamed_directory_name
             )
@@ -319,7 +322,6 @@ class TestDirectory(unittest.TestCase):
             
         return
     
-
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
 class TestDirectoryUnixLike(unittest.TestCase):
