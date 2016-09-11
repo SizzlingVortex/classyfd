@@ -4,14 +4,14 @@ import unittest
 import os
 import re
 import platform
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 # Unix-like Only Imports
 try:
     import pwd
 except ImportError:
     pass
 
-from classyfd import File, utils
+from classyfd import File, Directory, utils
 
 
 # Globals
@@ -40,6 +40,22 @@ class TestUtils(unittest.TestCase):
         self.assertFalse(os.path.exists(random_file_path))
         
         return
+    
+    def test_get_random_directory_name(self):
+        with TemporaryDirectory() as td:
+            d = Directory(td)
+            base_directory = d.parent
+        
+        random_directory_name = utils.get_random_directory_name(base_directory)
+        self.assertEqual(len(random_directory_name), 32)
+        
+        random_directory_path = os.path.join(
+            base_directory, random_directory_name
+        )
+        self.assertFalse(os.path.exists(random_directory_path))
+        
+        return
+    
     
 
 @unittest.skipUnless(IS_UNIX_LIKE, "Test supported on Unix-like systems only")
