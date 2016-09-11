@@ -283,8 +283,37 @@ class Directory(_BaseFileAndDirectoryInterface):
     def move(self):
         pass
     
-    def rename(self):
-        pass 
+    def rename(self, new_directory_name, replace_existing_directory=False):
+        """
+        Rename the directory
+        
+        This method is only meant to change the directory's name, not any other
+        part of its path. For that type of behavior (like GNU mv), use the
+        "move" method instead.
+        
+        Parameters:
+        new_directory_name -- (str) what to rename the directory to. An 
+                              exception will be raised if any slashes are
+                              included because this method will think the value
+                              is that of a path rather than a new name for the
+                              directory.
+        replace_existing_directory -- (bool) if the path of the new directory 
+                                      name already exists, then this variable
+                                      determines what action to take. If False,
+                                      then a FileExistsError is raised. If True,
+                                      then the existing file gets replaced with
+                                      this one.
+        
+        """
+        DIRECTORY = self.parent
+        
+        self._execute_rename(
+            DIRECTORY, new_directory_name=new_directory_name, 
+            replace_existing_directory=replace_existing_directory
+        )
+        
+        return
+ 
     
     def remove(self, empty_only=True):
         """
@@ -303,3 +332,76 @@ class Directory(_BaseFileAndDirectoryInterface):
             shutil.rmtree(self.path)
         
         return
+    
+    # Private Methods
+    def _execute_rename(self, base_directory, new_directory_name=None,
+                        replace_existing_directory=False):
+        """
+        Execute a file rename (or move) operation
+
+        This method was created to contain the common code between the .rename()
+        and .move() methods because they share a lot of the same logic.
+
+        Parameters:
+        base_directory -- (str) the parent directory of the directory that an
+                          instance of this class refers to.
+        new_directory_name -- (str) the file's name will be renamed to 
+                              this. This should just be the new name of the file
+                              (including any file extensions), so no paths.
+        replace_existing_directory -- (bool) if the path of the new file name
+                                      already exists, then this variable 
+                                      determines what action to take. If False,
+                                      then a FileExistsError is raised. If True,
+                                      then the existing file gets replaced with
+                                      this one.
+
+        """
+        # Initialize these for later (conditional) use
+        path_refers_to_file = None
+        path_refers_to_directory = None        
+        
+        SLASHES = ("\\", "/")         
+        if new_directory_name and any(c in new_directory_name for c in SLASHES):
+            # The new directory name is likely a path, rather than just a file
+            # name.
+            raise InvalidDirectoryValueError(
+                "Slashes are not allowed in the new directory name"
+            )       
+
+        if new_directory_name:
+            new_directory_path = (
+                os.path.join(base_directory, new_directory_name)
+            )
+        else:
+            new_directory_path = os.path.join(base_directory, self.name)
+
+        path_already_exists = os.path.exists(new_directory_path)
+        if path_already_exists:
+            path_refers_to_file = os.path.isfile(new_directory_path)
+            path_refers_to_directory = os.path.isdir(new_directory_path)        
+        
+        if path_already_exists and not replace_existing_directory:
+            if path_refers_to_file:
+                raise FileExistsError(
+                    "Cannot rename the directory because a file with the chosen"
+                    " name already exists"
+                )
+            elif path_refers_to_directory:
+                raise IsADirectoryError(
+                    "Cannot rename the directory because a directory with the "
+                    "chosen name already exists"
+                )        
+
+        elif path_already_exists and replace_existing_directory:
+            # os.replace() is the Python-recommended way of doing cross-platform
+            # replaces, rather than os.rename().
+            os.replace(self.path, new_directory_path)
+
+        else:
+            # Perform a simple "rename" operation since the new file path does
+            # not already exist.
+            os.rename(self.path, new_directory_path)           
+
+        # Update the path
+        self.path = new_directory_path        
+        return    
