@@ -283,7 +283,7 @@ class Directory(_BaseFileAndDirectoryInterface):
     def move(self):
         pass
     
-    def rename(self, new_directory_name, replace_existing_directory=False):
+    def rename(self, new_directory_name):
         """
         Rename the directory
         
@@ -297,19 +297,13 @@ class Directory(_BaseFileAndDirectoryInterface):
                               included because this method will think the value
                               is that of a path rather than a new name for the
                               directory.
-        replace_existing_directory -- (bool) if the path of the new directory 
-                                      name already exists, then this variable
-                                      determines what action to take. If False,
-                                      then a FileExistsError is raised. If True,
-                                      then the existing file gets replaced with
-                                      this one.
+
         
         """
         DIRECTORY = self.parent
         
         self._execute_rename(
-            DIRECTORY, new_directory_name=new_directory_name, 
-            replace_existing_directory=replace_existing_directory
+            DIRECTORY, new_directory_name=new_directory_name
         )
         
         return
@@ -334,8 +328,7 @@ class Directory(_BaseFileAndDirectoryInterface):
         return
     
     # Private Methods
-    def _execute_rename(self, base_directory, new_directory_name=None,
-                        replace_existing_directory=False):
+    def _execute_rename(self, base_directory, new_directory_name=None):
         """
         Execute a file rename (or move) operation
 
@@ -348,12 +341,7 @@ class Directory(_BaseFileAndDirectoryInterface):
         new_directory_name -- (str) the file's name will be renamed to 
                               this. This should just be the new name of the file
                               (including any file extensions), so no paths.
-        replace_existing_directory -- (bool) if the path of the new file name
-                                      already exists, then this variable 
-                                      determines what action to take. If False,
-                                      then a FileExistsError is raised. If True,
-                                      then the existing file gets replaced with
-                                      this one.
+
 
         """
         # Initialize these for later (conditional) use
@@ -380,7 +368,7 @@ class Directory(_BaseFileAndDirectoryInterface):
             path_refers_to_file = os.path.isfile(new_directory_path)
             path_refers_to_directory = os.path.isdir(new_directory_path)        
         
-        if path_already_exists and not replace_existing_directory:
+        if path_already_exists:
             if path_refers_to_file:
                 raise FileExistsError(
                     "Cannot rename the directory because a file with the chosen"
@@ -392,14 +380,7 @@ class Directory(_BaseFileAndDirectoryInterface):
                     "chosen name already exists"
                 )        
 
-        elif path_already_exists and replace_existing_directory:
-            # os.replace() is the Python-recommended way of doing cross-platform
-            # replaces, rather than os.rename().
-            os.replace(self.path, new_directory_path)
-
         else:
-            # Perform a simple "rename" operation since the new file path does
-            # not already exist.
             os.rename(self.path, new_directory_path)           
 
         # Update the path
