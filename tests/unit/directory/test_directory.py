@@ -356,7 +356,33 @@ class TestDirectory(unittest.TestCase):
             d.rename(new_directory_name)
             self.assertEqual(d.path, expected_path)
             
-        return    
+        return
+    
+    def test_raise_exception_on_rename_to_existing_path(self):
+        # The Existing Path Refers to an Existing File
+        td = tempfile.TemporaryDirectory()
+        tf = tempfile.NamedTemporaryFile()
+        tf_name = os.path.split(tf.name)[1]
+        # Try to rename the second temporary file to that of the first
+        with TemporaryDirectoryHandler(td):
+            with TemporaryFileHandler(tf):
+                d = Directory(td.name)
+                with self.assertRaises(FileExistsError, msg="Existing file assert failed"):
+                    d.rename(tf_name)
+        
+        # The Existing Path Refers to an Existing Directory
+        td1 = tempfile.TemporaryDirectory()
+        td2 = tempfile.TemporaryDirectory()
+        td2_name = os.path.split(td1.name)[1]
+        # Try to rename the temporary file to that of the temporary directory
+        with TemporaryDirectoryHandler(td1):
+            with TemporaryDirectoryHandler(td2):
+                d = Directory(td1.name)
+                with self.assertRaises(IsADirectoryError, msg="Existing directory assert failed"):
+                    d.rename(td2_name)                
+        
+        return
+    
     
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
@@ -585,6 +611,39 @@ class TemporaryDirectoryHandler:
         
         return
     
+    
+class TemporaryFileHandler:
+    """This class should only be used (as a context manager) by tests that 
+    rename, move, or delete a real temporary file before the tempfile object's
+    .close method is called. It can also be used by any tests that, for
+    whateve reason, can't or won't use the standard tempfile context manager."""
+    def __init__(self, temporary_file):
+        """
+        Construct the object
+        
+        Parameters:
+        temporary_file -- (tempfile object) needed so that its .close() method
+                          can be called on it.
+        
+        """
+        self._temporary_file = temporary_file
+        return
+    
+    def __enter__(self):
+        # Nothing needs to happen here.
+        pass
+    
+    def __exit__(self, *args):
+        # Catch the FileNotFoundError on .close() to avoid the calling test 
+        # outputting that it ignored an exception when the temporary file was
+        # garbage collected (i.e., when .__del__() is called).          
+        try:
+            self._temporary_file.close()
+        except FileNotFoundError:
+            # This is normal, since the file was closed.
+            pass         
+        
+        return
 
 
 if __name__ == "__main__":
