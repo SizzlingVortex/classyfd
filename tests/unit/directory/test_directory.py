@@ -5,6 +5,7 @@ import os
 import tempfile
 import pathlib
 import platform
+import shutil
 # Unix-like Only Imports
 try:
     import pwd
@@ -286,8 +287,103 @@ class TestDirectory(unittest.TestCase):
             d = Directory(td)
             self.assertTrue(d.exists, msg="The directory should exist")
         
-        return    
-
+        return   
+    
+    def test_rename_directory(self):
+        td = tempfile.TemporaryDirectory()
+        with TemporaryDirectoryHandler(td):
+            # The base directory will be the same for both the original and 
+            # renamed directory.
+            BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+            
+            # Rename the Directory
+            renamed_directory_name = (
+                utils.get_random_directory_name(BASE_DIRECTORY)
+            )
+            
+            expected_new_directory_path = os.path.join(
+                BASE_DIRECTORY, renamed_directory_name
+            )
+            
+            self.assertFalse(
+                os.path.exists(expected_new_directory_path), 
+                msg=(
+                    "The directory can't be renamed because the path already "
+                    "exists."
+                )
+            )
+            
+            d = Directory(td.name)
+            d.rename(renamed_directory_name)
+            self.assertTrue(
+                os.path.exists(expected_new_directory_path), 
+                msg="The directory was not renamed"
+            )
+            
+        return
+    
+    def test_raise_exception_for_rename_with_path(self):
+        """
+        An exception should be raised when a path (instead of just a new
+        directory name) is given. This is likely to occur if a user thinks
+        rename is just like GNU mv -- in which mv actually accepts paths.
+        
+        """
+        td = tempfile.TemporaryDirectory()
+        BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+        
+        # Try to Rename the Directory
+        with TemporaryDirectoryHandler(td):
+            renamed_directory_name = utils.get_random_file_name(BASE_DIRECTORY)
+            new_directory_path = (
+                os.path.join(BASE_DIRECTORY, renamed_directory_name)
+            )
+            d = Directory(td.name)
+            self.assertRaises(
+                InvalidDirectoryValueError, d.rename, new_directory_path
+            )
+        
+        return
+    
+    def test_rename_updates_path(self):
+        """If a Directory object is renamed, then its path should be updated"""
+        td = tempfile.TemporaryDirectory()
+        with TemporaryDirectoryHandler(td):
+            BASE_DIRECTORY = str(pathlib.Path(td.name).parent)
+            d = Directory(td.name)
+            new_directory_name = utils.get_random_directory_name(BASE_DIRECTORY)
+            expected_path = os.path.join(BASE_DIRECTORY, new_directory_name)                        
+            d.rename(new_directory_name)
+            self.assertEqual(d.path, expected_path)
+            
+        return
+    
+    def test_raise_exception_on_rename_to_existing_path(self):
+        # The Existing Path Refers to an Existing File
+        td = tempfile.TemporaryDirectory()
+        tf = tempfile.NamedTemporaryFile()
+        tf_name = os.path.split(tf.name)[1]
+        # Try to rename the second temporary file to that of the first
+        with TemporaryDirectoryHandler(td):
+            with TemporaryFileHandler(tf):
+                d = Directory(td.name)
+                with self.assertRaises(FileExistsError, msg="Existing file assert failed"):
+                    d.rename(tf_name)
+        
+        # The Existing Path Refers to an Existing Directory
+        td1 = tempfile.TemporaryDirectory()
+        td2 = tempfile.TemporaryDirectory()
+        td2_name = os.path.split(td1.name)[1]
+        # Try to rename the temporary file to that of the temporary directory
+        with TemporaryDirectoryHandler(td1):
+            with TemporaryDirectoryHandler(td2):
+                d = Directory(td1.name)
+                with self.assertRaises(IsADirectoryError, msg="Existing directory assert failed"):
+                    d.rename(td2_name)                
+        
+        return
+    
+    
 
 @unittest.skipUnless(IS_OS_POSIX_COMPLIANT, "Unix-like only test")
 class TestDirectoryUnixLike(unittest.TestCase):
@@ -515,6 +611,39 @@ class TemporaryDirectoryHandler:
         
         return
     
+    
+class TemporaryFileHandler:
+    """This class should only be used (as a context manager) by tests that 
+    rename, move, or delete a real temporary file before the tempfile object's
+    .close method is called. It can also be used by any tests that, for
+    whateve reason, can't or won't use the standard tempfile context manager."""
+    def __init__(self, temporary_file):
+        """
+        Construct the object
+        
+        Parameters:
+        temporary_file -- (tempfile object) needed so that its .close() method
+                          can be called on it.
+        
+        """
+        self._temporary_file = temporary_file
+        return
+    
+    def __enter__(self):
+        # Nothing needs to happen here.
+        pass
+    
+    def __exit__(self, *args):
+        # Catch the FileNotFoundError on .close() to avoid the calling test 
+        # outputting that it ignored an exception when the temporary file was
+        # garbage collected (i.e., when .__del__() is called).          
+        try:
+            self._temporary_file.close()
+        except FileNotFoundError:
+            # This is normal, since the file was closed.
+            pass         
+        
+        return
 
 
 if __name__ == "__main__":
