@@ -273,7 +273,7 @@ class TestDirectory(unittest.TestCase):
                 pass
             os.mkdir(os.path.join(td.name, "some-sub-directory"))
             d = Directory(td.name)
-            self.assertRaises(d.remove)        
+            self.assertRaises(OSError, d.remove)        
         
         return
     
